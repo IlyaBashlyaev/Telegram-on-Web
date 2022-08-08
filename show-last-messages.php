@@ -12,7 +12,7 @@
         $queryLength = 20;
     }
 
-    $connection = new mysqli('127.0.0.1', 'Ilya Bashlyaev', '#vOV(0y2#vOV(0y2', 'chats-db');
+    require 'db.php';
     $messages = $connection -> query("SELECT * FROM `messages` LIMIT $startPoint, $queryLength");
     $prevMessage = '';
 

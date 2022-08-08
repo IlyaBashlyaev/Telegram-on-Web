@@ -10,7 +10,7 @@
     $google_client -> addScope('email');
     $google_client -> addScope('profile');
 
-    $connection = new mysqli('127.0.0.1', 'Ilya Bashlyaev', '#vOV(0y2#vOV(0y2', 'chats-db');
+    require 'db.php';
     $chat = $connection -> query('SELECT * FROM `chats`') -> fetch_assoc();
     $onlineCount = $connection -> query('SELECT * FROM `online-users`') -> num_rows;
     
@@ -140,7 +140,7 @@
         </script>
 
         <link rel="stylesheet" href="css/style.css">
-        <title>Telegram</title>
+        <title>Telegram on Web</title>
     </head>
 
     <body ontouchstart="touchStart()" ontouchend="touchEnd()" onmouseup="rippleHide()" onclick="rippleHide()" style="background-image: url(<?= $chat['background'] ?>);">

@@ -1,5 +1,5 @@
 <?php
-    $connection = new mysqli('127.0.0.1', 'Ilya Bashlyaev', '#vOV(0y2#vOV(0y2', 'chats-db');
+    require 'db.php';
 
     if (isset($_POST['token_response'])) {
         $secret_key = '6LceBaAbAAAAAJfSQzrVd5sW_UCFb9ovOM2G3YVK';

@@ -1,6 +1,6 @@
 <?php
     if (isset($_POST['lastMessageId'])) {
-        $connection = new mysqli('127.0.0.1', 'Ilya Bashlyaev', '#vOV(0y2#vOV(0y2', 'chats-db');
+        require 'db.php';
         $messageId = $_POST['lastMessageId'];
 
         $messages = $connection -> query("SELECT * FROM `messages` WHERE `message-id` = $messageId");

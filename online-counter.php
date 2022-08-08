@@ -1,5 +1,5 @@
 <?php
-    $connection = new mysqli('127.0.0.1', 'Ilya Bashlyaev', '#vOV(0y2#vOV(0y2', 'chats-db');
+    require 'db.php';
     $symbols = '1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM';
 
     if (!isset($_COOKIE['id']) && !isset($_COOKIE['guest-id'])) {
