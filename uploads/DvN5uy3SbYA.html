@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link href="https://fonts.googleapis.com/css2?family=Itim&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Itim&family=Trispace:wght@600&display=swap" rel="stylesheet">
+
+		<link rel="shortcut icon" type="image/png" href="http://tests.iod.gov.ua/static/favicon.ico">
+		<title>Портал тестування</title>
+
+		<style>
+			@keyframes signInHovering {
+				to {
+					background-color: #646478;
+					color: #a5a5c8;
+				}
+			}
+
+			@keyframes signUpHovering {
+				to {
+					background-color: #007bff;
+					color: #78b9ff;
+				}
+			}
+
+			* {
+				margin: 0;
+				padding: 0;
+				font-family: 'Itim', cursive;
+			}
+
+			@keyframes titleHovering {
+				to {
+					color: #2164c8;
+				}
+			}
+
+			.header {
+				width: 100vw;
+				height: 8vh;
+				background: #111;
+				display: flex;
+			}
+
+			.title {
+				width: 33%;
+				height: 100%;
+				color: #fff;
+				font-size: 2vw;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+			}
+
+			.login {
+				margin-left: 25%;
+				width: 33%;
+				height: 100%;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+			}
+
+			.sign-in {
+				width: 50%;
+				height: 70%;
+				border: 2px solid #646478;
+				border-radius: 0.5vw;
+				color: #646478;
+				font-size: 1.5vw;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+			}
+
+			.sign-in:hover {
+				animation: signInHovering 1s forwards;
+			}
+
+			.sign-up {
+				margin-left: 5vw;
+				width: 40%;
+				height: 70%;
+				border: 2px solid #007bff;
+				border-radius: 0.5vw;
+				color: #007bff;
+				font-size: 1.5vw;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+			}
+
+			.sign-up:hover {
+				animation: signUpHovering 1s forwards;
+			}
+
+			.main-menu {
+				margin-top: 5vh;
+				margin-left: 10vw;
+				width: 80vw;
+				height: 8vh;
+				background: linear-gradient(to right, #ccc, #fff);
+				color: #111;
+				font-size: 2vw;
+				display: flex;
+				align-items: center;
+			}
+
+			.main-menu a {
+				margin-left: 5vh;
+			}
+
+			.test-header {
+				margin-top: 5vh;
+				margin-left: 12.5vw;
+				width: 75vw;
+				height: 8vh;
+				border-radius: 15px 15px 0 0;
+				display: flex;
+			}
+
+			.test-header-name {
+				width: 60%;
+				height: 100%;
+				color: #fff;
+				font-size: 1.5vw;
+				border-radius: 15px 15px 0 0;
+				background-color: #111;
+				display: flex;
+				align-items: center;
+			}
+
+			.test-header-name a {
+				margin-left: 2vw;
+			}
+
+			.test-header-lang {
+				width: 10%;
+				height: 100%;
+				color: #fff;
+				font-size: 1.5vw;
+				background-color: #111;
+				border-left: 2px solid #fff;
+				border-radius: 15px 15px 0 0;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+			}
+
+			.test-header-attribute {
+				width: 30%;
+				height: 100%;
+				font-size: 1.5vw;
+				color: #fff;
+				background-color: #111;
+				border-left: 2px solid #fff;
+				border-radius: 15px 15px 0 0;
+				display: flex;
+				align-items: center;
+			}
+
+			.test-header-attribute a {
+				margin-left: 2vw;
+			}
+
+			.test {
+				margin-left: 12.5vw;
+				width: 75vw;
+				height: 20vh;
+				background-color: #ddd;
+				display: flex;
+				align-items: center;
+			}
+
+			.test-name {
+				width: 60%;
+				height: 100%;
+			}
+
+			.test-title {
+				margin-top: 2vh;
+				margin-left: 2vw;
+				color: #287bff;
+				font-size: 2vw;
+			}
+
+			.test-title:hover {
+				animation: titleHovering 1s forwards;
+			}
+
+			.test-desc {
+				margin-top: 2vh; margin-bottom: 2vh;
+				margin-left: 2vw; margin-right: 2vw;
+			}
+
+			.test-lang {
+				margin-top: 2vh;
+				margin-left: 5%;
+				width: 10%;
+				height: 100%;
+				display: flex;
+				justify-content: center;
+			}
+
+			.test-attribute {
+				margin-top: 2vh;
+				margin-left: 2vw;
+				width: 30%;
+				height: 100%;
+			}
+
+			.test:nth-child(2n) {
+				background-color: #eee;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class='header'>
+			<div class='title'>Портал тестування</div>
+
+			<div class='login'>
+				<div class='sign-in'>Зареєструватися</div>
+
+				<div class='sign-up'>Увійти</div>
+			</div>
+		</div>
+		<div class='main-menu'><a>Головне меню</a></div>
+
+		<div class='test-header'>
+			<div class='test-header-name'><a>Назва</a></div>
+			<div class='test-header-lang'>Мова</div>
+			<div class='test-header-attribute'><a>Атрибути</a></div>
+		</div>
+
+		<div class='test'>
+			<div class='test-name'>
+				<div class='test-title'>Тест Інтелекту Кеттелла</div>
+				<div class='test-desc'>Культурно-вільний тест інтелекту Кеттелла призначений для виміру рівня інтелектуального розвитку незалежно від впливу факторів навколишнього середовища (культура, освіта та ін.).</div>
+			</div>
+
+			<div class='test-lang'>рос</div>
+			<div class='test-attribute'>Вимір рівня інтелекту.</div>
+		</div>
+
+		<div class='test'>
+			<div class='test-name'>
+				<div class='test-title'>Тест Інтелекту Р. Амтхауера</div>
+				<div class='test-desc'>Тест структури інтелекту Р. Амтхауера призначений для виміру рівня інтелектуального розвитку.</div>
+			</div>
+
+			<div class='test-lang'>укр</div>
+			<div class='test-attribute'>Вимір рівня інтелекту.</div>
+		</div>
+
+		<div class='test'>
+			<div class='test-name'>
+				<div class='test-title'>Тест Професійної Мотивації</div>
+				<div class='test-desc'>Тест Професійної Мотивації з 42 питань.</div>
+			</div>
+
+			<div class='test-lang'>укр</div>
+			<div class='test-attribute'>Орієнтація у виборі професій.</div>
+		</div>
+
+		<div class='test'>
+			<div class='test-name'>
+				<div class='test-title'>Методика багатофакторного дослідження особистості Кеттелла (форма С)</div>
+				<div class='test-desc'>Методика багатофакторного дослідження особистості з 105 питань.</div>
+			</div>
+
+			<div class='test-lang'>рос</div>
+			<div class='test-attribute'>Вимір різноманітних соціальних характеристик.</div>
+		</div>
+	</body>
+</html>
