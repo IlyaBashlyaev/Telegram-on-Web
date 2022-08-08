@@ -768,31 +768,33 @@
             setScale()
 
             function surfMessages() {
-                $.ajax({
-                    url: 'surf-messages.php',
-                    type: 'post',
-                    data: {lastMessageId: lastMessageId},
-                    success: content => {
-                        if (content) {
-                            const messages = document.querySelector('.messages')
-                            messages.innerHTML += content
-                            lastMessageId++
+                if (<?= $length ?>) {
+                    $.ajax({
+                        url: 'surf-messages.php',
+                        type: 'post',
+                        data: {lastMessageId: lastMessageId},
+                        success: content => {
+                            if (content) {
+                                const messages = document.querySelector('.messages')
+                                messages.innerHTML += content
+                                lastMessageId++
 
-                            const messageBlocks = document.querySelectorAll('.message-block'),
-                                  lastMessageBlock = messageBlocks[messageBlocks.length - 1],
-                                  author = lastMessageBlock.querySelector('.message-author').innerText,
-                                  notificationBody = lastMessageBlock.getAttribute('type'),
-                                  pictureSrc = lastMessageBlock.querySelector('.picture-source').getAttribute('source')
+                                const messageBlocks = document.querySelectorAll('.message-block'),
+                                    lastMessageBlock = messageBlocks[messageBlocks.length - 1],
+                                    author = lastMessageBlock.querySelector('.message-author').innerText,
+                                    notificationBody = lastMessageBlock.getAttribute('type'),
+                                    pictureSrc = lastMessageBlock.querySelector('.picture-source').getAttribute('source')
 
-                            if (Notification.permission == 'granted') {
-                                const notification = new Notification(author, {
-                                    body: notificationBody,
-                                    icon: pictureSrc
-                                })
+                                if (Notification.permission == 'granted') {
+                                    const notification = new Notification(author, {
+                                        body: notificationBody,
+                                        icon: pictureSrc
+                                    })
+                                }
                             }
                         }
-                    }
-                })
+                    })
+                }
             }
             setInterval(surfMessages, 2000)
 
