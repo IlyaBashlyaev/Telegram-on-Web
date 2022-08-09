@@ -13,6 +13,10 @@
             $response -> success &&
             $response -> score >= 0.5
         ) {
+            if ($_SERVER['HTTP_HOST'] == 'telegram-on-web.herokuapp.com')
+                $fileURL = 'https://telegram-on-web.herokuapp.com/';
+            else
+                $fileURL = '';
             $authorId = $_POST['author-id'];
 
             if (isset($_POST['message-id']))
@@ -60,7 +64,7 @@
                     unlink($message['file-name']);
                 }
                 
-                $filePath = "uploads/$id.$fileActualExt";
+                $filePath = $fileURL . "uploads/$id.$fileActualExt";
                 move_uploaded_file($fileTmpName, $filePath);
 
                 if (in_array($fileActualExt, $imageExt))
