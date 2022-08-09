@@ -81,6 +81,9 @@
                 }
 
                 else {
+                    if (!isset($filePath))
+                        $filePath = 'NULL';
+
                     $connection -> query(
                         "UPDATE `messages` SET `type` = '$type',
                                                `file-name` = '$fileName',
@@ -103,6 +106,13 @@
                 }
 
                 else {
+                    $message = $connection -> query("SELECT * FROM `messages` WHERE `message-id` = '$messageId'")
+                               -> fetch_assoc();
+                    unlink($message['file-name']);
+
+                    if (!isset($filePath))
+                        $filePath = 'NULL';
+                    
                     $connection -> query(
                         "UPDATE `messages` SET `type` = 'text',
                                                `content` = '$text',
@@ -119,20 +129,24 @@
             ?>
 
             <form action="/" method="post" style="display: none;">
+                <input type="hidden" name="author-id" value="<?= $_POST['author-id'] ?>">
+
                 <?php
                     if (isset($_POST['edit'])) {
                         ?>
 
-                        <input type="hidden" name="author-id" value="<?= $_POST['author-id'] ?>">
                         <input type="hidden" name="message-id" value="<?= $_POST['message-id'] ?>">
                         <input type="hidden" name="text" value="">
-
+                        
                         <?php
                     }
 
                     else {
                         ?>
+                        
+                        <input type="hidden" name="message-id" value="">
                         <input type="hidden" name="text" value="<?= $_POST['text'] ?>">
+                        
                         <?php
                     }
                 ?>

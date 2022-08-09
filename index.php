@@ -3,9 +3,17 @@
     $id = '';
     $google_client = new Google_Client();
 
-    $google_client -> setClientId('63638702195-2vbffcs08c5aorccaeligsk9bo51ki9q.apps.googleusercontent.com');
-    $google_client -> setClientSecret('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');
-    $google_client -> setRedirectUri('https://telegram-on-web.herokuapp.com');
+    if ($_SERVER['HTTP_HOST'] == 'telegram-on-web.herokuapp.com') {
+        $google_client -> setClientId('63638702195-2vbffcs08c5aorccaeligsk9bo51ki9q.apps.googleusercontent.com');
+        $google_client -> setClientSecret('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');
+        $google_client -> setRedirectUri('https://telegram-on-web.herokuapp.com');
+    }
+
+    else {
+        $google_client -> setClientId('63638702195-ph4bqevoc6hva1b4lom4fr3r8jmqk13o.apps.googleusercontent.com');
+        $google_client -> setClientSecret('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');
+        $google_client -> setRedirectUri('http://localhost');
+    }
 
     $google_client -> addScope('email');
     $google_client -> addScope('profile');
@@ -383,15 +391,19 @@
                     if ($messageId) {
                         $messageId = (int) $messageId['message-id'];
                         $currentPubdate = '';
+                        
+                        $firstMessageId = $length - 20;
+                        if ($firstMessageId < 0)
+                            $firstMessageId = 0;
 
-                        $messages = $connection -> query('SELECT * FROM `messages` LIMIT ' . $length - 20 . ', 21');
+                        $messages = $connection -> query("SELECT * FROM `messages` LIMIT $firstMessageId, 20");
                         $firstMessage = true;
                         
                         while ($message = $messages -> fetch_assoc()) {
                             $content = $message['content'];
                             $type = $message['type'];
 
-                            $currMessageId = $message['message-id'];
+                            $currentMessageId = $message['message-id'];
                             $authorId = $message['author-id'];
                             $user = $connection -> query(
                                 "SELECT * FROM `users` WHERE `id` = '$authorId'"
@@ -455,7 +467,7 @@
                                             <div class="message" style="border-radius: <?php
                                                 if ($authorId != $id) {echo '10px 10px 10px 0';}
                                                 else {echo '10px 10px 0 10px';}
-                                            ?>" message-id="<?= $currMessageId ?>" author-id="<?= $authorId ?>">
+                                            ?>" message-id="<?= $currentMessageId ?>" author-id="<?= $authorId ?>">
                                                 <div class="message-author"><?= $firstName . ' ' . $lastName ?></div>
 
                                                 <div class="message-text">
@@ -494,7 +506,7 @@
                                                     echo 'margin-left:';
                                                 else
                                                     echo 'margin-right:';
-                                            ?> 10px' message-id="<?= $currMessageId ?>" author-id="<?= $authorId ?>">
+                                            ?> 10px' message-id="<?= $currentMessageId ?>" author-id="<?= $authorId ?>">
                                                 <div class="pubdate-block file-pubdate-block" style="bottom: 14px;"><?= $hour . ':' . $minute ?></div>
                                                 <img src="<?= $filePath ?>">
                                             </a>
@@ -511,7 +523,7 @@
                                                     echo 'margin-left:';
                                                 else
                                                     echo 'margin-right:';
-                                            ?> 10px' message-id="<?= $currMessageId ?>" author-id="<?= $authorId ?>">
+                                            ?> 10px' message-id="<?= $currentMessageId ?>" author-id="<?= $authorId ?>">
                                                 <div class="pubdate-block file-pubdate-block" style="top: 14px;"><?= $hour . ':' . $minute ?></div>
                                                 <video controls src="<?= $filePath ?>"></video>
                                             </div>
@@ -528,7 +540,7 @@
                                                     echo "margin-right: 10px; align-items: flex-end;";
                                                 else
                                                     echo "margin-left: 10px; align-items: flex-start;";
-                                            ?>" message-id="<?= $currMessageId ?>" author-id="<?= $authorId ?>">
+                                            ?>" message-id="<?= $currentMessageId ?>" author-id="<?= $authorId ?>">
                                                 <audio src="<?= $filePath ?>" controls></audio>
                                                 <div class="pubdate-block file-pubdate-block" style="position: relative; <?php
                                                     if ($authorId != $id)
@@ -556,7 +568,7 @@
 
             <script>
                 var lastMessageId = parseInt(<?= $messageId ?>) + 1,
-                    length = <?= $length ?> - 21
+                    length = <?= $length ?> - 20
             </script>
 
             <div class="write-message-block">
@@ -670,13 +682,14 @@
                 isOnclick = false, items = false, timer,
                 stopRecorder = false, audioFlag = true,
                 lastMessage = '', authorId, messageId,
-                lastScrollY
+                lastScrollY = messages.scrollTop
 
             scrollDownBlock.setAttribute('onclick', 'messages.scrollTo(0, messagesHeight)')
             messages.scrollTo(0, messagesHeight)
 
             function setMessagesStyles() {
-                const border_top = document.querySelector('.border-top'),
+                const messages = document.querySelector('.messages'),
+                      border_top = document.querySelector('.border-top'),
                       contextMenu = document.querySelector('.context-menu')
                 contextMenu.classList.remove('active')
                 
@@ -703,19 +716,20 @@
                 for (var i = 0; i < messageAlerts.length; i++) {
                     var messageAlert = messageAlerts[i],
                         {top} = messageAlert.getBoundingClientRect()
+                    top -= 100
 
-                    if (top > 0) {
+                    if (top < 0) {
                         messageAlertsInnerText.push(messageAlert.innerText)
-                        messageAlertsTop.push(top - 70)
+                        messageAlertsTop.push(top)
                     }
                 }
 
-                var minTop = Math.min.apply(Math, messageAlertsTop),
+                var minTop = Math.max.apply(Math, messageAlertsTop),
                     minIndex = messageAlertsTop.indexOf(minTop),
                     innerText = messageAlertsInnerText[minIndex]
                 
                 const messageAlertFixed = document.querySelector('.message-alert.fixed')
-                if (messages.scrollTop > lastScrollY)
+                if (messages.scrollTop >= lastScrollY)
                     messageAlertFixed.style.opacity = '0'
                 else
                     messageAlertFixed.style.opacity = '1'
@@ -728,24 +742,26 @@
 
             function showLastMessages() {
                 const messageAlert = document.querySelector('.message-alert:first-child')
-                var isMessageAlert
-                (messageAlert) ? isMessageAlert = true : isMessageAlert = false
 
                 if (!messages.scrollTop && length > 0) {
-                    length -= 20
-
                     $.ajax({
                         url: 'show-last-messages.php',
-                        type: 'post',
-                        data: {
-                            length: length,
-                            messageAlert: isMessageAlert
-                        },
+                        type: 'get',
+                        data: {length: length},
                         success: content => {
-                            const messages = document.querySelector('.messages')
-                            messages.innerHTML = content + messages.innerHTML
+                            const messages = document.querySelector('.messages'),
+                                  messageAlertFixed = document.querySelector('.message-alert.fixed'),
+                                  messageAlert = document.querySelector('.message-alert:not(.fixed)')
+                                  messageAlertFixedContent = messageAlertFixed.outerHTML
+
+                            messageAlertFixed.remove()
+                            messageAlert.remove()
+
+                            messages.innerHTML = messageAlertFixedContent + content + messages.innerHTML
                         }
                     })
+
+                    length -= 20
                 }
 
                 jQueryCode()
@@ -1068,7 +1084,7 @@
                         authorId: authorId,
                         messageId: messageId
                     },
-                    success: () => {
+                    success: res => {
                         const message = document.querySelector(`.message[message-id='${messageId}']`).parentNode
                         message.remove()
                     }
