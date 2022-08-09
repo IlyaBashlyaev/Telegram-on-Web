@@ -5,7 +5,7 @@
 
     $google_client -> setClientId('63638702195-2vbffcs08c5aorccaeligsk9bo51ki9q.apps.googleusercontent.com');
     $google_client -> setClientSecret('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');
-    $google_client -> setRedirectUri('http://ilyabashlyaev-56325.portmap.host:56325');
+    $google_client -> setRedirectUri('https://telegram-on-web.herokuapp.com/');
 
     $google_client -> addScope('email');
     $google_client -> addScope('profile');
