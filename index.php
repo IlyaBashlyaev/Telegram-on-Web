@@ -12,7 +12,7 @@
     else {
         $google_client -> setClientId('63638702195-ph4bqevoc6hva1b4lom4fr3r8jmqk13o.apps.googleusercontent.com');
         $google_client -> setClientSecret('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');
-        $google_client -> setRedirectUri('http://localhost');
+        $google_client -> setRedirectUri('http://telegram-web.hopto.org');
     }
 
     $google_client -> addScope('email');
@@ -100,9 +100,7 @@
                     );
                 }
 
-                setcookie(
-                    'id', $id, time() + 315360000
-                );
+                setcookie('id', $id, time() + 315360000);
             }
             
             header('Location: /');
@@ -201,6 +199,24 @@
         </script>
 
         <?php
+            if (!isset($_COOKIE['user-timezone'])) {
+                ?> <script>
+                    var timezoneOffset = new Date().getTimezoneOffset()
+                    timezoneOffset = timezoneOffset == 0 ? 0 : -timezoneOffset
+                    timezoneOffset *= 60
+                    console.log(timezoneOffset)
+
+                    $.ajax({
+                        url: 'set-timezone.php',
+                        type: 'get',
+                        data: {timezoneOffset: timezoneOffset},
+                        success: res => {
+                            location.reload()
+                        }
+                    })
+                </script> <?php
+            }
+
             if (isset($_SERVER['HTTP_X_REQUESTED_WITH']))
                 $webView = true;
             else
@@ -413,7 +429,16 @@
                             $lastName = $user['last-name'];
                             $picture = $user['picture'];
 
-                            $pubdate = explode(' ', $message['pubdate']);
+                            if (isset($_COOKIE['user-timezone'])) {
+                                $date = new DateTime($message['pubdate'], new DateTimeZone('Europe/Paris'));
+                                $date -> setTimezone(new DateTimeZone($_COOKIE['user-timezone']));
+                                $pubdate = $date -> format('Y-m-d H:i:s');
+                            }
+
+                            else
+                                $pubdate = $message['pubdate'];
+                            
+                            $pubdate = explode(' ', $pubdate);
                             $firstPart = explode('-', $pubdate[0]);
                             $lastPart = explode(':', $pubdate[1]);
 
@@ -626,7 +651,7 @@
                                     echo 'onclick="audioRecorder()"><i class="fas fa-microphone"></i>';
                             }
                             else
-                                echo 'onclick="audioRecorder()"><i class="fas fa-microphone"></i>';
+                                echo 'onclick="audioRecorder()" ontouchend="audioRecorder()"><i class="fas fa-microphone"></i>';
                             ?>
                         </div>
                     </div>
@@ -639,7 +664,7 @@
             <i class="far fa-arrow-down"></i>
         </div>
 
-        <script src="https://www.google.com/recaptcha/api.js?render=6LceBaAbAAAAAD2wrX1xjBBPORMhfmwKhzGy-xij"></script>
+        <script src="https://www.google.com/recaptcha/api.js?render=6Ldq8ZwbAAAAAN98ra5XtDtLZoUrMg6TJmIHCHMm"></script>
         <script>
             if (Notification.permission == 'default')
                 Notification.requestPermission()
@@ -665,7 +690,7 @@
             }
 
             grecaptcha.ready(function() {
-                grecaptcha.execute('6LceBaAbAAAAAD2wrX1xjBBPORMhfmwKhzGy-xij', {action: 'submit'}).then(function(token) {
+                grecaptcha.execute('6Ldq8ZwbAAAAAN98ra5XtDtLZoUrMg6TJmIHCHMm', {action: 'submit'}).then(function(token) {
                     var response = document.querySelector('.token_response')
                     response.value = token
                 })
@@ -946,8 +971,7 @@
 
                 else {
                     const writeMessageContent = document.querySelector('.write-message-content')
-                    writeMessageContent.appendChild(button)
-                    button.click()
+                    writeMessageContent.submit()
                 }
             }
 
@@ -1048,7 +1072,7 @@
             }
 
             function touchStart() {
-                timer = setTimeout(() => document.body.click(), 500)
+                timer = setTimeout(() => $('#body').trigger('touchstart'), 400)
             }
 
             function touchEnd() {

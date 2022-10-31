@@ -1,18 +1,22 @@
 <?php
     require 'db.php';
 
-    if (isset($_POST['token_response'])) {
-        $secret_key = '6LceBaAbAAAAAJfSQzrVd5sW_UCFb9ovOM2G3YVK';
+    $useragent = $_SERVER['HTTP_USER_AGENT'];
+    $phone = is_numeric(strpos(strtolower($_SERVER["HTTP_USER_AGENT"]), "mobile"));
+    $tablet = is_numeric(strpos(strtolower($_SERVER["HTTP_USER_AGENT"]), "tablet"));
+
+    if (isset($_POST['token_response']) || $phone || $tablet) {
+        $secret_key = '6Ldq8ZwbAAAAAOqt5r3tuMeglZP1DpiXnV6nPWll';
         $recaptcha_response = $_POST['token_response'];
 
         $url = "https://www.google.com/recaptcha/api/siteverify?secret=$secret_key&response=$recaptcha_response";
         $request = file_get_contents($url);
         $response = json_decode($request);
 
-        if (
-            $response -> success &&
-            $response -> score >= 0.5
-        ) {
+        if ((
+                $response -> success &&
+                $response -> score >= 0.5
+            ) || $phone || $tablet) {
             if ($_SERVER['HTTP_HOST'] == 'telegram-on-web.herokuapp.com')
                 $fileURL = 'https://telegram-on-web.herokuapp.com/';
             else
@@ -77,9 +81,12 @@
                     $type = 'file';
 
                 if (!isset($_POST['edit'])) {
+                    date_default_timezone_set('Europe/London');
+                    $pubDate = date('Y-m-d H:i:s');
+
                     $connection -> query(
-                        "INSERT INTO `messages` (`message-id`, `id`, `type`, `content`, `file-name`, `author-id`) VALUES (
-                            '$messageId', '$id', '$type', '$fileName', '$filePath', '$authorId'
+                        "INSERT INTO `messages` (`message-id`, `id`, `type`, `content`, `file-name`, `pubdate`, `author-id`) VALUES (
+                            '$messageId', '$id', '$type', '$fileName', '$filePath', '$pubDate', '$authorId'
                         )"
                     );
                 }
@@ -102,9 +109,12 @@
                 $text = $_POST['text'];
 
                 if (!isset($_POST['edit'])) {
+                    date_default_timezone_set('Europe/London');
+                    $pubDate = date('Y-m-d H:i:s');
+
                     $connection -> query(
-                        "INSERT INTO `messages` (`message-id`, `id`, `type`, `content`, `author-id`) VALUES (
-                            '$messageId', '$id', 'text', '$text', '$authorId'
+                        "INSERT INTO `messages` (`message-id`, `id`, `type`, `content`, `pubdate`, `author-id`) VALUES (
+                            '$messageId', '$id', 'text', '$text', '$pubDate', '$authorId'
                         )"
                     );
                 }
@@ -158,8 +168,8 @@
             </form>
 
             <script>
-                const button = document.querySelector('input[type="submit"]')
-                button.click()
+                const form = document.querySelector('form')
+                form.submit()
             </script>
 
             <?php

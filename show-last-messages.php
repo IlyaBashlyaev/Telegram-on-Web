@@ -38,7 +38,16 @@
         $lastName = $user['last-name'];
         $picture = $user['picture'];
 
-        $pubdate = explode(' ', $message['pubdate']);
+        if (isset($_COOKIE['user-timezone'])) {
+            $date = new DateTime($message['pubdate'], new DateTimeZone('Europe/Paris'));
+            $date -> setTimezone(new DateTimeZone($_COOKIE['user-timezone']));
+            $pubdate = $date -> format('Y-m-d H:i:s');
+        }
+
+        else
+            $pubdate = $message['pubdate'];
+        
+        $pubdate = explode(' ', $pubdate);
         $firstPart = explode('-', $pubdate[0]);
         $lastPart = explode(':', $pubdate[1]);
 
