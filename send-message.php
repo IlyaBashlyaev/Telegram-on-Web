@@ -136,7 +136,7 @@
                 }
             }
 
-            header('Location: /');
+            // header('Location: /');
         }
 
         else {
@@ -169,7 +169,7 @@
 
             <script>
                 const form = document.querySelector('form')
-                form.submit()
+                // form.submit()
             </script>
 
             <?php
