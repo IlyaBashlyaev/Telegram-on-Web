@@ -425,7 +425,7 @@ main.blurred {
 .write-message-el > svg {
   width: 100%;
   height: 17px;
-  fill: #1b1b1b;
+  fill: #1b1b1b !important;
 }
 
 .write-message-last {
@@ -740,7 +740,7 @@ main.blurred {
 .message-el > svg {
   width: 100%;
   height: 17px;
-  fill: #1b1b1b;
+  fill: #1b1b1b !important;
 }
 
 .message-author {
@@ -815,7 +815,7 @@ main.blurred {
 }
 
 .scroll-down-block {
-  transition: bottom .2s, opacity .2s, background-color .5s;
+  transition: bottom .2s, opacity .2s, background-color .5s, z-index 0s .2s;
   position: absolute;
   right: 20px;
   bottom: 0;
@@ -826,14 +826,17 @@ main.blurred {
   border-radius: 35px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
   opacity: 0;
+  z-index: -1;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .scroll-down-block.active {
+  transition: bottom .2s, opacity .2s, background-color .5s;
   bottom: 120px;
   opacity: 1;
+  z-index: 0;
 }
 
 .scroll-down-block:hover {

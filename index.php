@@ -1072,7 +1072,7 @@
             }
 
             function touchStart() {
-                timer = setTimeout(() => $('#body').trigger('touchstart'), 400)
+                timer = setTimeout(showContextMenu, 400)
             }
 
             function touchEnd() {
