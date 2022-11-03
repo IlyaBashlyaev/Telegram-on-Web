@@ -83,7 +83,7 @@
                     $type = 'file';
 
                 if (!isset($_POST['edit'])) {
-                    date_default_timezone_set('Europe/London');
+                    date_default_timezone_set('Europe/Paris');
                     $pubDate = date('Y-m-d H:i:s');
 
                     $connection -> query(
@@ -111,7 +111,7 @@
                 $text = $_POST['text'];
 
                 if (!isset($_POST['edit'])) {
-                    date_default_timezone_set('Europe/London');
+                    date_default_timezone_set('Europe/Paris');
                     $pubDate = date('Y-m-d H:i:s');
 
                     $connection -> query(
