@@ -153,7 +153,7 @@
         <title>Telegram on Web</title>
     </head>
 
-    <body ontouchstart="touchStart()" ontouchend="touchEnd()" onmouseup="rippleHide()" onclick="rippleHide()" style="background-image: url(<?= $chat['background'] ?>);">
+    <body onmouseup="rippleHide()" onclick="rippleHide()" style="background-image: url(<?= $chat['background'] ?>);">
         <div class="pop-up">
             <div class="pop-up-bg" onclick="closeAlert()"></div>
 
@@ -722,9 +722,7 @@
 
             function setMessagesStyles() {
                 const messages = document.querySelector('.messages'),
-                      border_top = document.querySelector('.border-top'),
-                      contextMenu = document.querySelector('.context-menu')
-                contextMenu.classList.remove('active')
+                      border_top = document.querySelector('.border-top')
                 
                 if (messagesHeight < messages.offsetHeight)
                     messages.style.justifyContent = 'flex-end'
@@ -1052,9 +1050,11 @@
                             authorId = el.getAttribute('author-id')
                             messageId = el.getAttribute('message-id')
                         }
+
                         el = el.parentNode
                     }
 
+                    console.log(flag)
                     if (flag) {
                         if (event.pageX <= window.innerWidth - 124 && event.pageY <= window.innerHeight - 160)
                             contextMenu.style.transformOrigin = 'top left'
@@ -1117,17 +1117,6 @@
                 setMessagesStyles()
             }
 
-            function touchStart() {
-                timer = setTimeout(showContextMenu, 100)
-            }
-
-            function touchEnd() {
-                if (timer) {
-                    clearTimeout(timer)
-                    timer = null
-                }
-            }
-
             function jQueryCode() {
                 $('.image-link').magnificPopup({
                     type: 'image',
@@ -1188,6 +1177,8 @@
                 }
             })
 
+            document.body.addEventListener('click', showContextMenu)
+
             messages.addEventListener('scroll', () => {
                 setMessagesStyles(), showLastMessages()
             })
@@ -1196,19 +1187,11 @@
                 setMessagesStyles(); setScale()
             })
 
-            if ('<?= $webView ?>' == 'true') {
-                console.log('hi')
-                document.body.addEventListener('click', showContextMenu(e))
-            }
-
             window.addEventListener("contextmenu", showContextMenu)
             window.addEventListener("click", () => {
-                const contextMenu = document.querySelector('.context-menu'),
-                      options = document.querySelector('.options'),
+                const options = document.querySelector('.options'),
                       optionsBlock = options.querySelector('.options-block')
-
                 var el = event.target, isOptionsButton = false
-                contextMenu.classList.remove('active')
                 
                 for (var i = 0; i < 2; i++) {
                     if (el) {
