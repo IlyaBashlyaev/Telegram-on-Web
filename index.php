@@ -153,7 +153,7 @@
         <title>Telegram on Web</title>
     </head>
 
-    <body onmouseup="rippleHide()" onclick="rippleHide()" style="background-image: url(<?= $chat['background'] ?>);">
+    <body ontouchstart="touchStart()" ontouchend="touchEnd()" onmouseup="rippleHide()" onclick="rippleHide()" style="background-image: url(<?= $chat['background'] ?>);">
         <div class="pop-up">
             <div class="pop-up-bg" onclick="closeAlert()"></div>
 
@@ -655,7 +655,7 @@
                                     echo 'onclick="audioRecorder()"><i class="fas fa-microphone"></i>';
                             }
                             else
-                                echo 'onclick="audioRecorder()" ontouchend="audioRecorder()"><i class="fas fa-microphone"></i>';
+                                echo 'onclick="audioRecorder()"><i class="fas fa-microphone"></i>';
                             ?>
                         </div>
                     </div>
@@ -1034,51 +1034,53 @@
             }
 
             function showContextMenu(event) {
-                const contextMenu = document.querySelector('.context-menu')
-                event.preventDefault()
+                if (event) {
+                    const contextMenu = document.querySelector('.context-menu')
+                    event.preventDefault()
 
-                var el = event.target,
-                    flag = false
+                    var el = event.target,
+                        flag = false
 
-                for (var i = 0; i < 3; i++) {
-                    if (el.getAttribute('author-id') == '<?php
-                        if (isset($_COOKIE['id']))
-                            echo $_COOKIE['id'];
-                        else
-                            echo " ";
-                    ?>') {
-                        flag = true
-                        authorId = el.getAttribute('author-id')
-                        messageId = el.getAttribute('message-id')
+                    for (var i = 0; i < 3; i++) {
+                        if (el.getAttribute('author-id') == '<?php
+                            if (isset($_COOKIE['id']))
+                                echo $_COOKIE['id'];
+                            else
+                                echo " ";
+                        ?>') {
+                            flag = true
+                            authorId = el.getAttribute('author-id')
+                            messageId = el.getAttribute('message-id')
+                        }
+                        el = el.parentNode
                     }
-                    el = el.parentNode
-                }
 
-                if (flag) {
-                    if (event.pageX <= window.innerWidth - 124 && event.pageY <= window.innerHeight - 160)
-                        contextMenu.style.transformOrigin = 'top left'
-                    else if (event.pageX >= window.innerWidth - 124 && event.pageY <= window.innerHeight - 160)
-                        contextMenu.style.transformOrigin = 'top right'
-                    else if (event.pageX <= window.innerWidth - 124 && event.pageY >= window.innerHeight - 160)
-                        contextMenu.style.transformOrigin = 'bottom left'
-                    else if (event.pageX >= window.innerWidth - 124 && event.pageY >= window.innerHeight - 160)
-                        contextMenu.style.transformOrigin = 'bottom right'
+                    if (flag) {
+                        if (event.pageX <= window.innerWidth - 124 && event.pageY <= window.innerHeight - 160)
+                            contextMenu.style.transformOrigin = 'top left'
+                        else if (event.pageX >= window.innerWidth - 124 && event.pageY <= window.innerHeight - 160)
+                            contextMenu.style.transformOrigin = 'top right'
+                        else if (event.pageX <= window.innerWidth - 124 && event.pageY >= window.innerHeight - 160)
+                            contextMenu.style.transformOrigin = 'bottom left'
+                        else if (event.pageX >= window.innerWidth - 124 && event.pageY >= window.innerHeight - 160)
+                            contextMenu.style.transformOrigin = 'bottom right'
 
-                    if (event.pageX <= window.innerWidth - 124)
-                        contextMenu.style.left = event.pageX + 'px'
+                        if (event.pageX <= window.innerWidth - 124)
+                            contextMenu.style.left = event.pageX + 'px'
+                        else
+                            contextMenu.style.left = event.pageX - 124 + 'px'
+                        
+                        if (event.pageY <= window.innerHeight - 160)
+                            contextMenu.style.top = event.pageY + 'px'
+                        else
+                            contextMenu.style.top = event.pageY - 160 + 'px'
+                        
+                        contextMenu.classList.add('active')
+                    }
+
                     else
-                        contextMenu.style.left = event.pageX - 124 + 'px'
-                    
-                    if (event.pageY <= window.innerHeight - 160)
-                        contextMenu.style.top = event.pageY + 'px'
-                    else
-                        contextMenu.style.top = event.pageY - 160 + 'px'
-                    
-                    contextMenu.classList.add('active')
+                        contextMenu.classList.remove('active')
                 }
-
-                else
-                    contextMenu.classList.remove('active')
             }
 
             function editMessage() {
@@ -1113,6 +1115,17 @@
                     }
                 })
                 setMessagesStyles()
+            }
+
+            function touchStart() {
+                timer = setTimeout(showContextMenu, 100)
+            }
+
+            function touchEnd() {
+                if (timer) {
+                    clearTimeout(timer)
+                    timer = null
+                }
             }
 
             function jQueryCode() {
@@ -1183,19 +1196,10 @@
                 setMessagesStyles(); setScale()
             })
 
-            window.addEventListener('touchstart', e => {
-                e.preventDefault()
-                timer = setTimeout(showContextMenu, 100)
-            })
-
-            window.addEventListener('touchend', e => {
-                e.preventDefault()
-                
-                if (timer) {
-                    clearTimeout(timer)
-                    timer = null
-                }
-            })
+            if ('<?= $webView ?>' == 'true') {
+                console.log('hi')
+                document.body.addEventListener('click', showContextMenu(e))
+            }
 
             window.addEventListener("contextmenu", showContextMenu)
             window.addEventListener("click", () => {
