@@ -208,7 +208,6 @@
                     var timezoneOffset = new Date().getTimezoneOffset()
                     timezoneOffset = timezoneOffset == 0 ? 0 : -timezoneOffset
                     timezoneOffset *= 60
-                    console.log(timezoneOffset)
 
                     $.ajax({
                         url: 'set-timezone.php',
@@ -1054,7 +1053,6 @@
                         el = el.parentNode
                     }
 
-                    console.log(flag)
                     if (flag) {
                         if (event.pageX <= window.innerWidth - 124 && event.pageY <= window.innerHeight - 160)
                             contextMenu.style.transformOrigin = 'top left'
