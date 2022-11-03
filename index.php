@@ -1,5 +1,9 @@
 <?php
     include 'vendor/autoload.php';
+    
+    $useragent = $_SERVER['HTTP_USER_AGENT'];
+    $phone = is_numeric(strpos(strtolower($_SERVER["HTTP_USER_AGENT"]), "mobile"));
+
     $id = '';
     $google_client = new Google_Client();
 
@@ -149,7 +153,7 @@
         <title>Telegram on Web</title>
     </head>
 
-    <body ontouchstart="touchStart()" ontouchend="touchEnd()" onmouseup="rippleHide()" onclick="rippleHide()" style="background-image: url(<?= $chat['background'] ?>);">
+    <body onmouseup="rippleHide()" onclick="rippleHide()" style="background-image: url(<?= $chat['background'] ?>);">
         <div class="pop-up">
             <div class="pop-up-bg" onclick="closeAlert()"></div>
 
@@ -700,6 +704,12 @@
                   messages = document.querySelector('.messages'),
                   scrollDownBlock = document.querySelector('.scroll-down-block')
 
+            if ('<?= $phone ?>' == 'true' || '<?= $webView ?>' == 'true')
+                scrollDownBlock.remove()
+            
+            else
+                scrollDownBlock.setAttribute('onclick', 'messages.scrollTo(0, messagesHeight)')
+
             button.style.display = 'none'
             button.type = 'submit'
 
@@ -708,8 +718,6 @@
                 stopRecorder = false, audioFlag = true,
                 lastMessage = '', authorId, messageId,
                 lastScrollY = messages.scrollTop
-
-            scrollDownBlock.setAttribute('onclick', 'messages.scrollTo(0, messagesHeight)')
             messages.scrollTo(0, messagesHeight)
 
             function setMessagesStyles() {
@@ -723,16 +731,18 @@
                 else
                     messages.style.removeProperty('justify-content')
 
-                if (messages.scrollTop + messages.offsetHeight < messagesHeight - 1) {
-                    scrollDownBlock.classList.add('active')
-                    border_top.style.background = `linear-gradient(
-                        to right, rgba(0, 0, 0, 0) 0%, rgba(255, 255, 255, .2) 10%, rgba(255, 255, 255, .2) 90%, rgba(0, 0, 0, 0) 100%
-                    )`
-                }
+                if ('<?= $phone ?>' == 'false' || '<?= $webView ?>' == 'false') {
+                    if (messages.scrollTop + messages.offsetHeight < messagesHeight - 1) {
+                        scrollDownBlock.classList.add('active')
+                        border_top.style.background = `linear-gradient(
+                            to right, rgba(0, 0, 0, 0) 0%, rgba(255, 255, 255, .2) 10%, rgba(255, 255, 255, .2) 90%, rgba(0, 0, 0, 0) 100%
+                        )`
+                    }
 
-                else {
-                    scrollDownBlock.classList.remove('active')
-                    border_top.style.background = 'transparent'
+                    else {
+                        scrollDownBlock.classList.remove('active')
+                        border_top.style.background = 'transparent'
+                    }
                 }
 
                 const messageAlerts = document.querySelectorAll('.message-alert:not(.fixed)')
@@ -1071,17 +1081,6 @@
                     contextMenu.classList.remove('active')
             }
 
-            function touchStart() {
-                timer = setTimeout(showContextMenu, 400)
-            }
-
-            function touchEnd() {
-                if (timer) {
-                    clearTimeout(timer)
-                    timer = null
-                }
-            }
-
             function editMessage() {
                 const form = document.querySelector('.write-message-content')
                 
@@ -1182,6 +1181,20 @@
 
             window.addEventListener('resize', () => {
                 setMessagesStyles(); setScale()
+            })
+
+            window.addEventListener('touchstart', e => {
+                e.preventDefault()
+                timer = setTimeout(showContextMenu, 100)
+            })
+
+            window.addEventListener('touchend', e => {
+                e.preventDefault()
+                
+                if (timer) {
+                    clearTimeout(timer)
+                    timer = null
+                }
             })
 
             window.addEventListener("contextmenu", showContextMenu)
