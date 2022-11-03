@@ -153,7 +153,7 @@
         <title>Telegram on Web</title>
     </head>
 
-    <body onmouseup="rippleHide()" onclick="rippleHide()" style="background-image: url(<?= $chat['background'] ?>);">
+    <body onclick="showContextMenu(event); click(event); rippleHide()" onmouseup="rippleHide()" style="background-image: url(<?= $chat['background'] ?>);">
         <div class="pop-up">
             <div class="pop-up-bg" onclick="closeAlert()"></div>
 
@@ -713,7 +713,7 @@
             button.type = 'submit'
 
             var messagesHeight = messages.scrollHeight,
-                isOnclick = false, items = false, timer,
+                isOnclick = false, items = false, isContextMenu = false,
                 stopRecorder = false, audioFlag = true,
                 lastMessage = '', authorId, messageId,
                 lastScrollY = messages.scrollTop
@@ -1039,18 +1039,20 @@
                         flag = false
 
                     for (var i = 0; i < 3; i++) {
-                        if (el.getAttribute('author-id') == '<?php
-                            if (isset($_COOKIE['id']))
-                                echo $_COOKIE['id'];
-                            else
-                                echo " ";
-                        ?>') {
-                            flag = true
-                            authorId = el.getAttribute('author-id')
-                            messageId = el.getAttribute('message-id')
-                        }
+                        if (el != document) {
+                            if (el.getAttribute('author-id') == '<?php
+                                if (isset($_COOKIE['id']))
+                                    echo $_COOKIE['id'];
+                                else
+                                    echo ' ';
+                            ?>') {
+                                flag = true
+                                authorId = el.getAttribute('author-id')
+                                messageId = el.getAttribute('message-id')
+                            }
 
-                        el = el.parentNode
+                            el = el.parentNode
+                        }
                     }
 
                     if (flag) {
@@ -1074,10 +1076,14 @@
                             contextMenu.style.top = event.pageY - 160 + 'px'
                         
                         contextMenu.classList.add('active')
+                        isContextMenu = true
                     }
 
-                    else
+                    else if (!isContextMenu)
                         contextMenu.classList.remove('active')
+                
+                    else
+                        isContextMenu = false
                 }
             }
 
@@ -1113,6 +1119,25 @@
                     }
                 })
                 setMessagesStyles()
+            }
+
+            function click(event) {
+                const options = document.querySelector('.options'),
+                      optionsBlock = options.querySelector('.options-block')
+                var el = event.target, isOptionsButton = false
+                
+                for (var i = 0; i < 2; i++) {
+                    if (el) {
+                        if (el.className == 'options-button')
+                            isOptionsButton = true
+                        el = el.parentNode
+                    }
+                }
+
+                if (!isOptionsButton && options.classList.contains('active')) {
+                    options.classList.remove('active')
+                    optionsBlock.classList.remove('active')
+                }
             }
 
             function jQueryCode() {
@@ -1175,8 +1200,6 @@
                 }
             })
 
-            document.body.addEventListener('click', showContextMenu)
-
             messages.addEventListener('scroll', () => {
                 setMessagesStyles(), showLastMessages()
             })
@@ -1186,24 +1209,6 @@
             })
 
             window.addEventListener("contextmenu", showContextMenu)
-            window.addEventListener("click", () => {
-                const options = document.querySelector('.options'),
-                      optionsBlock = options.querySelector('.options-block')
-                var el = event.target, isOptionsButton = false
-                
-                for (var i = 0; i < 2; i++) {
-                    if (el) {
-                        if (el.className == 'options-button')
-                            isOptionsButton = true
-                        el = el.parentNode
-                    }
-                }
-
-                if (!isOptionsButton && options.classList.contains('active')) {
-                    options.classList.remove('active')
-                    optionsBlock.classList.remove('active')
-                }
-            })
         </script>
     </body>
 </html>
