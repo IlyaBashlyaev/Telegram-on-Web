@@ -153,7 +153,7 @@
         <title>Telegram on Web</title>
     </head>
 
-    <body onclick="showContextMenu(event, 'click', true); click(event); rippleHide()" onmouseup="rippleHide()" style="background-image: url(<?= $chat['background'] ?>);">
+    <body onclick="showContextMenu(event, false, 'click', true); click(event); rippleHide()" onmouseup="rippleHide()" style="background-image: url(<?= $chat['background'] ?>);">
         <div class="pop-up">
             <div class="pop-up-bg" onclick="closeAlert()"></div>
 
@@ -491,7 +491,7 @@
                                             }
                                             ?>
                                             
-                                            <div class="message" style="border-radius: <?php
+                                            <div class="message" ontouchend="showContextMenu(event, true)" style="border-radius: <?php
                                                 if ($authorId != $id) {echo '10px 10px 10px 0';}
                                                 else {echo '10px 10px 0 10px';}
                                             ?>" message-id="<?= $currentMessageId ?>" author-id="<?= $authorId ?>">
@@ -1093,7 +1093,7 @@
                 setMessagesStyles()
             }
 
-            function showContextMenu(event, type = 'contextmenu', click = false) {
+            function showContextMenu(event, touch = false, type = 'contextmenu', click = false) {
                 if (event) {
                     const contextMenu = document.querySelector('.context-menu')
                     if (type == 'contextmenu')
@@ -1122,24 +1122,47 @@
                     }
 
                     if (flag) {
-                        if (event.pageX <= window.innerWidth - 124 && event.pageY <= window.innerHeight - 160)
-                            contextMenu.style.transformOrigin = 'top left'
-                        else if (event.pageX >= window.innerWidth - 124 && event.pageY <= window.innerHeight - 160)
-                            contextMenu.style.transformOrigin = 'top right'
-                        else if (event.pageX <= window.innerWidth - 124 && event.pageY >= window.innerHeight - 160)
-                            contextMenu.style.transformOrigin = 'bottom left'
-                        else if (event.pageX >= window.innerWidth - 124 && event.pageY >= window.innerHeight - 160)
-                            contextMenu.style.transformOrigin = 'bottom right'
+                        if (!touch) {
+                            if (event.pageX <= window.innerWidth - 124 && event.pageY <= window.innerHeight - 160)
+                                contextMenu.style.transformOrigin = 'top left'
+                            else if (event.pageX >= window.innerWidth - 124 && event.pageY <= window.innerHeight - 160)
+                                contextMenu.style.transformOrigin = 'top right'
+                            else if (event.pageX <= window.innerWidth - 124 && event.pageY >= window.innerHeight - 160)
+                                contextMenu.style.transformOrigin = 'bottom left'
+                            else if (event.pageX >= window.innerWidth - 124 && event.pageY >= window.innerHeight - 160)
+                                contextMenu.style.transformOrigin = 'bottom right'
 
-                        if (event.pageX <= window.innerWidth - 124)
-                            contextMenu.style.left = event.pageX + 'px'
-                        else
-                            contextMenu.style.left = event.pageX - 124 + 'px'
-                        
-                        if (event.pageY <= window.innerHeight - 160)
-                            contextMenu.style.top = event.pageY + 'px'
-                        else
-                            contextMenu.style.top = event.pageY - 160 + 'px'
+                            if (event.pageX <= window.innerWidth - 124)
+                                contextMenu.style.left = event.pageX + 'px'
+                            else
+                                contextMenu.style.left = event.pageX - 124 + 'px'
+                            
+                            if (event.pageY <= window.innerHeight - 160)
+                                contextMenu.style.top = event.pageY + 'px'
+                            else
+                                contextMenu.style.top = event.pageY - 160 + 'px'
+                        }
+
+                        else {
+                            if (event.changedTouches[0].clientX <= window.innerWidth - 124 && event.changedTouches[0].clientY <= window.innerHeight - 160)
+                                contextMenu.style.transformOrigin = 'top left'
+                            else if (event.changedTouches[0].clientX >= window.innerWidth - 124 && event.changedTouches[0].clientY <= window.innerHeight - 160)
+                                contextMenu.style.transformOrigin = 'top right'
+                            else if (event.changedTouches[0].clientX <= window.innerWidth - 124 && event.changedTouches[0].clientY >= window.innerHeight - 160)
+                                contextMenu.style.transformOrigin = 'bottom left'
+                            else if (event.changedTouches[0].clientX >= window.innerWidth - 124 && event.changedTouches[0].clientY >= window.innerHeight - 160)
+                                contextMenu.style.transformOrigin = 'bottom right'
+
+                            if (event.changedTouches[0].clientX <= window.innerWidth - 124)
+                                contextMenu.style.left = event.changedTouches[0].clientX + 'px'
+                            else
+                                contextMenu.style.left = event.changedTouches[0].clientX - 124 + 'px'
+                            
+                            if (event.changedTouches[0].clientY <= window.innerHeight - 160)
+                                contextMenu.style.top = event.changedTouches[0].clientY + 'px'
+                            else
+                                contextMenu.style.top = event.changedTouches[0].clientY - 160 + 'px'
+                        }
                         
                         contextMenu.classList.add('active')
                         isContextMenu = true

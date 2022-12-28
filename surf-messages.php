@@ -104,7 +104,7 @@
                         }
                         ?>
                         
-                        <div class="message" style="border-radius: <?php
+                        <div class="message" ontouchend="showContextMenu(event, true)" style="border-radius: <?php
                             if ($authorId != $id) {echo '10px 10px 10px 0';}
                             else {echo '10px 10px 0 10px';}
                         ?>" message-id="<?= $messageId ?>" author-id="<?= $authorId ?>">
