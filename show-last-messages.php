@@ -1,4 +1,5 @@
 <?php
+    require 'db.php';
     $length = (int) $_GET['length'];
 
     if ($length < 20) {
@@ -11,11 +12,12 @@
         $queryLength = 21;
     }
 
-    require 'db.php';
     $messages = $connection -> query("SELECT * FROM `messages` LIMIT $startPoint, $queryLength");
     $i = 0;
 
     while ($message = $messages -> fetch_assoc()) {
+        $messageAlertDelete = false;
+
         $monthsArray = array(
             1 => 'January', 2 => 'February', 3 => 'March',
             4 => 'April', 5 => 'May', 6 => 'June',
@@ -146,7 +148,11 @@
                                         echo "<pre>$content</pre>";
 
                                     else if ($type == 'file') {
-                                        $filePath = $message['file-name'];
+                                        if ($_SERVER['HTTP_HOST'] == 'telegram-on-web.000webhostapp.com')
+                                            $filePath = 'uploads/' . explode('/', $message['file-name'])[7];
+                                        else
+                                            $filePath = $message['file-name'];
+
                                         echo "<a href='$filePath' download='$content'>$content</a>";
                                     }
                                 ?>
@@ -168,7 +174,10 @@
                     }
 
                     else if ($type == 'image') {
-                        $filePath = $message['file-name'];
+                        if ($_SERVER['HTTP_HOST'] == 'telegram-on-web.000webhostapp.com')
+                            $filePath = 'uploads/' . explode('/', $message['file-name'])[7];
+                        else
+                            $filePath = $message['file-name'];
                         ?>
                         
                         <a class="image-link message" href="<?= $filePath ?>" style='<?php
@@ -185,7 +194,10 @@
                     }
 
                     else if ($type == 'video') {
-                        $filePath = $message['file-name'];
+                        if ($_SERVER['HTTP_HOST'] == 'telegram-on-web.000webhostapp.com')
+                            $filePath = 'uploads/' . explode('/', $message['file-name'])[7];
+                        else
+                            $filePath = $message['file-name'];
                         ?>
                         
                         <div class="video-block message" style='<?php
@@ -202,7 +214,10 @@
                     }
 
                     else if ($type == 'audio') {
-                        $filePath = $message['file-name'];
+                        if ($_SERVER['HTTP_HOST'] == 'telegram-on-web.000webhostapp.com')
+                            $filePath = 'uploads/' . explode('/', $message['file-name'])[7];
+                        else
+                            $filePath = $message['file-name'];
                         ?>
 
                         <div class="audio-block message" style="<?php
@@ -237,25 +252,4 @@
         
         $i++;
     }
-
-    /* if (!$messageAlert) {
-        $nextMessage = $connection ->
-                    query('SELECT * FROM `messages` LIMIT ' . $startPoint + 19 . ', 1') ->
-                    fetch_assoc();
-
-        $nextPubdate = explode(' ', $nextMessage['pubdate']);
-        $nextFirstPart = explode('-', $nextPubdate[0]);
-
-        if ($firstPart != $nextFirstPart) {
-            ?>
-
-            <div class="message-alert">
-                <div class="inner-message-alert">
-                    <?= $monthsArray[$month] . " $day, $year" ?>
-                </div>
-            </div>
-
-            <?php
-        }
-    } */
 ?>

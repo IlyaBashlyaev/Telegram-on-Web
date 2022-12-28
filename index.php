@@ -7,10 +7,10 @@
     $id = '';
     $google_client = new Google_Client();
 
-    if ($_SERVER['HTTP_HOST'] == 'telegram-on-web.herokuapp.com') {
+    if ($_SERVER['HTTP_HOST'] == 'telegram-on-web.000webhostapp.com') {
         $google_client -> setClientId('63638702195-2vbffcs08c5aorccaeligsk9bo51ki9q.apps.googleusercontent.com');
         $google_client -> setClientSecret('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');
-        $google_client -> setRedirectUri('https://telegram-on-web.herokuapp.com');
+        $google_client -> setRedirectUri('https://telegram-on-web.000webhostapp.com');
     }
 
     else {
@@ -153,7 +153,7 @@
         <title>Telegram on Web</title>
     </head>
 
-    <body onclick="showContextMenu(event); click(event); rippleHide()" onmouseup="rippleHide()" style="background-image: url(<?= $chat['background'] ?>);">
+    <body onclick="showContextMenu(event, 'click', true); click(event); rippleHide()" onmouseup="rippleHide()" style="background-image: url(<?= $chat['background'] ?>);">
         <div class="pop-up">
             <div class="pop-up-bg" onclick="closeAlert()"></div>
 
@@ -414,11 +414,10 @@
                         $firstMessageId = $length - 20;
                         if ($firstMessageId < 0)
                             $firstMessageId = 0;
-
                         $messages = $connection -> query("SELECT * FROM `messages` LIMIT $firstMessageId, 20");
-                        $firstMessage = true;
                         
                         while ($message = $messages -> fetch_assoc()) {
+                            $messageAlertDelete = false;
                             $content = $message['content'];
                             $type = $message['type'];
 
@@ -504,7 +503,11 @@
                                                             echo "<pre>$content</pre>";
 
                                                         else if ($type == 'file') {
-                                                            $filePath = $message['file-name'];
+                                                            if ($_SERVER['HTTP_HOST'] == 'telegram-on-web.000webhostapp.com')
+                                                                $filePath = 'uploads/' . explode('/', $message['file-name'])[7];
+                                                            else
+                                                                $filePath = $message['file-name'];
+
                                                             echo "<a href='$filePath' download='$content'>$content</a>";
                                                         }
                                                     ?>
@@ -526,7 +529,10 @@
                                         }
 
                                         else if ($type == 'image') {
-                                            $filePath = $message['file-name'];
+                                            if ($_SERVER['HTTP_HOST'] == 'telegram-on-web.000webhostapp.com')
+                                                $filePath = 'uploads/' . explode('/', $message['file-name'])[7];
+                                            else
+                                                $filePath = $message['file-name'];
                                             ?>
                                             
                                             <a class="image-link message" href="<?= $filePath ?>" style='<?php
@@ -543,7 +549,10 @@
                                         }
 
                                         else if ($type == 'video') {
-                                            $filePath = $message['file-name'];
+                                            if ($_SERVER['HTTP_HOST'] == 'telegram-on-web.000webhostapp.com')
+                                                $filePath = 'uploads/' . explode('/', $message['file-name'])[7];
+                                            else
+                                                $filePath = $message['file-name'];
                                             ?>
                                             
                                             <div class="video-block message" style='<?php
@@ -560,7 +569,10 @@
                                         }
 
                                         else if ($type == 'audio') {
-                                            $filePath = $message['file-name'];
+                                            if ($_SERVER['HTTP_HOST'] == 'telegram-on-web.000webhostapp.com')
+                                                $filePath = 'uploads/' . explode('/', $message['file-name'])[7];
+                                            else
+                                                $filePath = $message['file-name'];
                                             ?>
 
                                             <div class="audio-block message" style="<?php
@@ -613,8 +625,8 @@
                 ?>
 
                 <div class="border-top"></div>
-                <form action='/send-message.php' method='post' class="write-message-content"
-                style="border-top: 1px solid transparent;" onclick='checkUser()' enctype="multipart/form-data">
+                <form action='/send-message.php' method='post' class="write-message-content" onclick="checkUser()"
+                style="border-top: 1px solid transparent;" enctype="multipart/form-data">
                     <input type="hidden" class='token_response' name='token_response'>
                     <input type="hidden" name='author-id' value='<?php
                         if (isset($_COOKIE['id'])) {echo $_COOKIE['id'];}
@@ -645,16 +657,22 @@
                         <svg xmlns="http://www.w3.org/2000/svg"><defs><filter x="-50%" y="-14.7%" width="200%" height="141.2%" filterUnits="objectBoundingBox" id="a"><feOffset dy="1" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset><feGaussianBlur stdDeviation="1" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur><feColorMatrix values="0 0 0 0 0.0621962482 0 0 0 0 0.138574144 0 0 0 0 0.185037364 0 0 0 0.15 0" in="shadowBlurOuter1"></feColorMatrix></filter></defs><g fill="none" fill-rule="evenodd"><path d="M6 17H0V0c.193 2.84.876 5.767 2.05 8.782.904 2.325 2.446 4.485 4.625 6.48A1 1 0 016 17z" fill="#000" filter="url(#a)" data-darkreader-inline-fill="" style="--darkreader-inline-fill:#e8e6e3;"></path><path d="M6 17H0V0c.193 2.84.876 5.767 2.05 8.782.904 2.325 2.446 4.485 4.625 6.48A1 1 0 016 17z" fill="#1b1b1b"></path></g></svg>
                     </div>
                     
-                    <div class="write-message-last">
+                    <div class="write-message-last" onclick="checkUser()">
                         <div class="inner-write-message-last" <?php  
                             if (isset($_POST['return-text'])) {
                                 if (!empty($_POST['text']))
                                     echo 'onclick="sendMessage()"><i class="fas fa-paper-plane"></i>';
-                                else
+                                else if (isset($_COOKIE['id']))
                                     echo 'onclick="audioRecorder()"><i class="fas fa-microphone"></i>';
+                                else
+                                    echo '><i class="fas fa-microphone"></i>';
                             }
-                            else
+                            
+                            else if (isset($_COOKIE['id']))
                                 echo 'onclick="audioRecorder()"><i class="fas fa-microphone"></i>';
+                            
+                            else
+                                echo '><i class="fas fa-microphone"></i>';
                             ?>
                         </div>
                     </div>
@@ -663,11 +681,12 @@
         </main>
 
         <input class='chat-background' type="file" accept="image/jpeg, image/png, image/gif" style="display: none;">
+        <script src="https://www.google.com/recaptcha/api.js?render=6Ldq8ZwbAAAAAN98ra5XtDtLZoUrMg6TJmIHCHMm"></script>
+        
         <div class="scroll-down-block">
             <i class="far fa-arrow-down"></i>
         </div>
-
-        <script src="https://www.google.com/recaptcha/api.js?render=6Ldq8ZwbAAAAAN98ra5XtDtLZoUrMg6TJmIHCHMm"></script>
+        
         <script>
             if (Notification.permission == 'default')
                 Notification.requestPermission()
@@ -718,6 +737,12 @@
                 lastMessage = '', authorId, messageId,
                 lastScrollY = messages.scrollTop
             messages.scrollTo(0, messagesHeight)
+
+            function removeWaterMark() {
+                const waterMark = document.querySelector('a[title]')
+                waterMark ? waterMark.remove() : requestAnimationFrame(removeWaterMark)
+            }
+            removeWaterMark()
 
             function setMessagesStyles() {
                 const messages = document.querySelector('.messages'),
@@ -783,12 +808,9 @@
                         success: content => {
                             const messages = document.querySelector('.messages'),
                                   messageAlertFixed = document.querySelector('.message-alert.fixed'),
-                                  messageAlert = document.querySelector('.message-alert:not(.fixed)')
                                   messageAlertFixedContent = messageAlertFixed.outerHTML
 
                             messageAlertFixed.remove()
-                            messageAlert.remove()
-
                             messages.innerHTML = messageAlertFixedContent + content + messages.innerHTML
                         }
                     })
@@ -859,24 +881,27 @@
             }
             setInterval(onlineCounter, 2000)
 
-            function checkUser() {
+            function checkUser(showPopUp = true) {
                 var id = '<?php 
-                    if (isset($_COOKIE['id'])) {echo $_COOKIE['id'];}
-                    else {echo '';}
+                    if (isset($_COOKIE['id']))
+                        echo $_COOKIE['id'];
                 ?>'
 
                 if (!id) {
-                    const popUp = document.querySelector('.pop-up'),
-                          popUpTitle = document.querySelector('.pop-up-title > span'),
-                          popUpOptions = document.querySelector('.pop-up-options'),
-                          header = document.querySelector('header'),
-                          main = document.querySelector('main'),
-                          options = document.querySelector('.options'),
-                          shadowBlock = document.querySelector('.shadow-block')
+                    const fileMessage = document.querySelector('.file-message')
 
-                    popUpTitle.innerText = 'Sign in with:'
-                    popUpOptions.removeAttribute('action')
-                    popUpOptions.innerHTML = `<div class="google-icon-block">
+                    if (showPopUp) {
+                        const popUp = document.querySelector('.pop-up'),
+                            popUpTitle = document.querySelector('.pop-up-title > span'),
+                            popUpOptions = document.querySelector('.pop-up-options'),
+                            header = document.querySelector('header'),
+                            main = document.querySelector('main'),
+                            options = document.querySelector('.options'),
+                            shadowBlock = document.querySelector('.shadow-block')
+
+                        popUpTitle.innerText = 'Sign in with:'
+                        popUpOptions.removeAttribute('action')
+                        popUpOptions.innerHTML = `<div class="google-icon-block">
     <div class="google icon" onclick="signIn('google')" onmousedown="rippleShow(this)">
         <i class="fab fa-google"></i>
     </div>
@@ -888,13 +913,17 @@
     </div>
 </div>`
 
-                    popUp.classList.add('active')
-                    header.classList.add('blurred')
-                    main.classList.add('blurred')
-                    options.classList.add('blurred')
-                    shadowBlock.classList.add('blurred')
+                        popUp.classList.add('active')
+                        header.classList.add('blurred')
+                        main.classList.add('blurred')
+                        options.classList.add('blurred')
+                        shadowBlock.classList.add('blurred')
+                    }
+
+                    fileMessage.type = 'text'
                 }
             }
+            checkUser(false)
 
             function signIn(key) {
                 if (key == 'google')
@@ -1030,28 +1059,65 @@
                 window.location.href = '/sign-out.php'
             }
 
-            function showContextMenu(event) {
+            function editMessage() {
+                const form = document.querySelector('.write-message-content')
+                
+                form.innerHTML = `<input type="hidden" name="edit" value="edit">
+<input type="hidden" name="author-id" value="${authorId}">
+<input type="hidden" name="message-id" value="${messageId}">` + form.innerHTML
+
+                const textarea = form.querySelector('textarea')
+                try {
+                    const lastMessage = document.querySelector(`.message[message-id='${messageId}'] .message-text pre`).innerHTML
+                    textarea.value = lastMessage
+                } catch {
+                    textarea.value = ''
+                }
+                
+                creatingMessage(textarea)
+            }
+
+            function deleteMessage() {
+                $.ajax({
+                    url: 'delete-message.php',
+                    type: 'post',
+                    data: {
+                        authorId: authorId,
+                        messageId: messageId
+                    },
+                    success: res => {
+                        const message = document.querySelector(`.message[message-id='${messageId}']`).parentNode
+                        message.remove()
+                    }
+                })
+                setMessagesStyles()
+            }
+
+            function showContextMenu(event, type = 'contextmenu', click = false) {
                 if (event) {
                     const contextMenu = document.querySelector('.context-menu')
-                    event.preventDefault()
+                    if (type == 'contextmenu')
+                        event.preventDefault()
 
                     var el = event.target,
                         flag = false
 
-                    for (var i = 0; i < 3; i++) {
-                        if (el != document) {
-                            if (el.getAttribute('author-id') == '<?php
-                                if (isset($_COOKIE['id']))
-                                    echo $_COOKIE['id'];
-                                else
-                                    echo ' ';
-                            ?>') {
-                                flag = true
-                                authorId = el.getAttribute('author-id')
-                                messageId = el.getAttribute('message-id')
-                            }
+                    if (!click) {
+                        for (var i = 0; i < 3; i++) {
+                            if (el != document) {
+                                if (el.getAttribute('author-id') == '<?php
+                                    if (isset($_COOKIE['id']))
+                                        echo $_COOKIE['id'];
+                                    else
+                                        echo ' ';
+                                ?>') {
+                                    flag = true
+                                    authorId = el.getAttribute('author-id')
+                                    messageId = el.getAttribute('message-id')
+                                }
 
-                            el = el.parentNode
+                                el = el.parentNode
+                            }
                         }
                     }
 
@@ -1085,40 +1151,6 @@
                     else
                         isContextMenu = false
                 }
-            }
-
-            function editMessage() {
-                const form = document.querySelector('.write-message-content')
-                
-                form.innerHTML = `<input type="hidden" name="edit" value="edit">
-<input type="hidden" name="author-id" value="${authorId}">
-<input type="hidden" name="message-id" value="${messageId}">` + form.innerHTML
-
-                const textarea = form.querySelector('textarea')
-                try {
-                    const lastMessage = document.querySelector(`.message[message-id='${messageId}'] .message-text pre`).innerHTML
-                    textarea.value = lastMessage
-                } catch {
-                    textarea.value = ''
-                }
-                
-                creatingMessage(textarea)
-            }
-
-            function deleteMessage() {
-                $.ajax({
-                    url: 'delete-message.php',
-                    type: 'post',
-                    data: {
-                        authorId: authorId,
-                        messageId: messageId
-                    },
-                    success: res => {
-                        const message = document.querySelector(`.message[message-id='${messageId}']`).parentNode
-                        message.remove()
-                    }
-                })
-                setMessagesStyles()
             }
 
             function click(event) {
@@ -1208,7 +1240,7 @@
                 setMessagesStyles(); setScale()
             })
 
-            window.addEventListener("contextmenu", showContextMenu)
+            document.body.addEventListener('contextmenu', showContextMenu)
         </script>
     </body>
 </html>

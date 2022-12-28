@@ -116,7 +116,11 @@
                                         echo "<pre>$content</pre>";
 
                                     else if ($type == 'file') {
-                                        $filePath = $message['file-name'];
+                                        if ($_SERVER['HTTP_HOST'] == 'telegram-on-web.000webhostapp.com')
+                                            $filePath = 'uploads/' . explode('/', $message['file-name'])[7];
+                                        else
+                                            $filePath = $message['file-name'];
+
                                         echo "<a href='$filePath' download='$content'>$content</a>";
                                     }
                                 ?>
@@ -138,7 +142,10 @@
                     }
 
                     else if ($type == 'image') {
-                        $filePath = $message['file-name'];
+                        if ($_SERVER['HTTP_HOST'] == 'telegram-on-web.000webhostapp.com')
+                            $filePath = 'uploads/' . explode('/', $message['file-name'])[7];
+                        else
+                            $filePath = $message['file-name'];
                         ?>
                         
                         <a class="image-link message" href="<?= $filePath ?>" style='<?php
@@ -155,7 +162,10 @@
                     }
 
                     else if ($type == 'video') {
-                        $filePath = $message['file-name'];
+                        if ($_SERVER['HTTP_HOST'] == 'telegram-on-web.000webhostapp.com')
+                            $filePath = 'uploads/' . explode('/', $message['file-name'])[7];
+                        else
+                            $filePath = $message['file-name'];
                         ?>
                         
                         <div class="video-block message" style='<?php
@@ -172,7 +182,10 @@
                     }
 
                     else if ($type == 'audio') {
-                        $filePath = $message['file-name'];
+                        if ($_SERVER['HTTP_HOST'] == 'telegram-on-web.000webhostapp.com')
+                            $filePath = 'uploads/' . explode('/', $message['file-name'])[7];
+                        else
+                            $filePath = $message['file-name'];
                         ?>
 
                         <div class="audio-block message" style="<?php

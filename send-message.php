@@ -5,8 +5,6 @@
     $phone = is_numeric(strpos(strtolower($_SERVER["HTTP_USER_AGENT"]), "mobile"));
     $tablet = is_numeric(strpos(strtolower($_SERVER["HTTP_USER_AGENT"]), "tablet"));
 
-    print_r($_POST);
-
     if (isset($_POST['token_response']) || $phone || $tablet) {
         $secret_key = '6Ldq8ZwbAAAAAOqt5r3tuMeglZP1DpiXnV6nPWll';
         $recaptcha_response = $_POST['token_response'];
@@ -16,11 +14,11 @@
         $response = json_decode($request);
 
         if ((
-                $response -> success &&
-                $response -> score > 0
-            ) || $phone || $tablet) {
-            if ($_SERVER['HTTP_HOST'] == 'telegram-on-web.herokuapp.com')
-                $fileURL = 'https://telegram-on-web.herokuapp.com/';
+            $response -> success &&
+            $response -> score > 0
+        ) || $phone || $tablet) {
+            if ($_SERVER['HTTP_HOST'] == 'telegram-on-web.000webhostapp.com')
+                $fileURL = '/storage/ssd4/192/20065192/public_html/';
             else
                 $fileURL = '';
             $authorId = $_POST['author-id'];
@@ -166,10 +164,17 @@
                         <?php
                     }
                 ?>
+                
                 <input type="submit" name="return-text">
             </form>
 
             <script>
+                function removeWaterMark() {
+                    const waterMark = document.querySelector('a[title]')
+                    waterMark ? waterMark.remove() : requestAnimationFrame(removeWaterMark)
+                }
+                removeWaterMark()
+                
                 const form = document.querySelector('form')
                 form.submit()
             </script>
