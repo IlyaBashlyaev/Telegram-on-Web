@@ -1,5 +1,6 @@
 <?php
     require 'db.php';
+    ini_set('display_errors', 0);
 
     $useragent = $_SERVER['HTTP_USER_AGENT'];
     $phone = is_numeric(strpos(strtolower($_SERVER["HTTP_USER_AGENT"]), "mobile"));
