@@ -6,18 +6,10 @@
 
     $id = '';
     $google_client = new Google_Client();
-
-    if ($_SERVER['HTTP_HOST'] == 'telegram-on-web.000webhostapp.com') {
-        $google_client -> setClientId('63638702195-2vbffcs08c5aorccaeligsk9bo51ki9q.apps.googleusercontent.com');
-        $google_client -> setClientSecret('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');
-        $google_client -> setRedirectUri('https://telegram-on-web.000webhostapp.com');
-    }
-
-    else {
-        $google_client -> setClientId('63638702195-ph4bqevoc6hva1b4lom4fr3r8jmqk13o.apps.googleusercontent.com');
-        $google_client -> setClientSecret('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');
-        $google_client -> setRedirectUri('http://telegram-web.hopto.org');
-    }
+    
+    $google_client -> setClientId('');
+    $google_client -> setClientSecret('');
+    $google_client -> setRedirectUri('http://telegram-web.hopto.org');
 
     $google_client -> addScope('email');
     $google_client -> addScope('profile');
@@ -138,15 +130,15 @@
         <script src="Magnific-Popup/jquery.magnific-popup.min.js"></script>
         <script src="autolink.js"></script>
 
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-TX9TPBDR41"></script>
+        
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZMC62EGMVD"></script>
         <script>
-            window.dataLayer = window.dataLayer || []
-            function gtag() {
-                dataLayer.push(arguments)
-            }
-            
-            gtag('js', new Date())
-            gtag('config', 'G-TX9TPBDR41')
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-ZMC62EGMVD');
         </script>
 
         <link rel="stylesheet" href="css/style.css">
@@ -681,7 +673,7 @@
         </main>
 
         <input class='chat-background' type="file" accept="image/jpeg, image/png, image/gif" style="display: none;">
-        <script src="https://www.google.com/recaptcha/api.js?render=6Ldq8ZwbAAAAAN98ra5XtDtLZoUrMg6TJmIHCHMm"></script>
+        <script src="https://www.google.com/recaptcha/api.js?render="></script>
         
         <div class="scroll-down-block">
             <i class="far fa-arrow-down"></i>
@@ -712,7 +704,7 @@
             }
 
             grecaptcha.ready(function() {
-                grecaptcha.execute('6Ldq8ZwbAAAAAN98ra5XtDtLZoUrMg6TJmIHCHMm', {action: 'submit'}).then(function(token) {
+                grecaptcha.execute('', {action: 'submit'}).then(function(token) {
                     var response = document.querySelector('.token_response')
                     response.value = token
                 })

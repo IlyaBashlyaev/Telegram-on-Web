@@ -1,15 +1,16 @@
 <?php
     require 'db.php';
+    ini_set('display_errors', 0);
 
     $useragent = $_SERVER['HTTP_USER_AGENT'];
     $phone = is_numeric(strpos(strtolower($_SERVER["HTTP_USER_AGENT"]), "mobile"));
     $tablet = is_numeric(strpos(strtolower($_SERVER["HTTP_USER_AGENT"]), "tablet"));
 
     if (isset($_POST['token_response']) || $phone || $tablet) {
-        $secret_key = '6Ldq8ZwbAAAAAOqt5r3tuMeglZP1DpiXnV6nPWll';
-        $recaptcha_response = $_POST['token_response'];
+        $secretKey = '';
+        $recaptchaResponse = $_POST['token_response'];
 
-        $url = "https://www.google.com/recaptcha/api/siteverify?secret=$secret_key&response=$recaptcha_response";
+        $url = "https://www.google.com/recaptcha/api/siteverify?secret=$secretKey&response=$recaptchaResponse";
         $request = file_get_contents($url);
         $response = json_decode($request);
 
@@ -17,10 +18,6 @@
             $response -> success &&
             $response -> score > 0
         ) || $phone || $tablet) {
-            if ($_SERVER['HTTP_HOST'] == 'telegram-on-web.000webhostapp.com')
-                $fileURL = '/storage/ssd4/192/20065192/public_html/';
-            else
-                $fileURL = '';
             $authorId = $_POST['author-id'];
 
             if (isset($_POST['message-id']))
@@ -68,7 +65,7 @@
                     unlink($message['file-name']);
                 }
                 
-                $filePath = $fileURL . "uploads/$id.$fileActualExt";
+                $filePath = 'uploads/' . $id.$fileActualExt;
                 move_uploaded_file($fileTmpName, $filePath);
 
                 if (in_array($fileActualExt, $imageExt))
