@@ -9,7 +9,7 @@
     
     $google_client -> setClientId('');
     $google_client -> setClientSecret('');
-    $google_client -> setRedirectUri('http://telegram-web.hopto.org');
+    $google_client -> setRedirectUri('http://telegram-on-web.42web.io');
 
     $google_client -> addScope('email');
     $google_client -> addScope('profile');
@@ -130,17 +130,6 @@
         <script src="Magnific-Popup/jquery.magnific-popup.min.js"></script>
         <script src="autolink.js"></script>
 
-        
-        <!-- Google tag (gtag.js) -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZMC62EGMVD"></script>
-        <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-
-            gtag('config', 'G-ZMC62EGMVD');
-        </script>
-
         <link rel="stylesheet" href="css/style.css">
         <title>Telegram on Web</title>
     </head>
@@ -225,7 +214,7 @@
                           popUpTitle = document.querySelector('.pop-up-title > span')
                           popUpOptions = document.querySelector('.pop-up-options')
 
-                    popUpTitle.innerText = 'Enter the password:'
+                    popUpTitle.innerText = 'Enter the password (kwHK#EC9):'
                     popUpOptions.action = '/check-password.php'
                     popUpOptions.innerHTML = `<input class="password" name="password" placeholder="Password:" onclick="wrongClick(this)">
 <button class="password-button" type="submit">
@@ -673,8 +662,6 @@
         </main>
 
         <input class='chat-background' type="file" accept="image/jpeg, image/png, image/gif" style="display: none;">
-        <script src="https://www.google.com/recaptcha/api.js?render="></script>
-        
         <div class="scroll-down-block">
             <i class="far fa-arrow-down"></i>
         </div>
@@ -702,13 +689,6 @@
                 if (url)
                     document.body.style.backgroundImage = `url(${url})`
             }
-
-            grecaptcha.ready(function() {
-                grecaptcha.execute('', {action: 'submit'}).then(function(token) {
-                    var response = document.querySelector('.token_response')
-                    response.value = token
-                })
-            })
 
             const button = document.createElement('button'),
                   messages = document.querySelector('.messages'),
